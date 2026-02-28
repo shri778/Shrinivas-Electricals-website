@@ -1,59 +1,73 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Shrinivas Electricals</title>
+    <title>Shrinivas Electricals - Assistant</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
         body {
-            font-family: Arial;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
             margin: 0;
             padding: 0;
-            background: #f4f4f4;
-            text-align: center;
         }
 
         header {
-            background: #ff9800;
+            background-color: #0d6efd;
             color: white;
-            padding: 20px;
-        }
-
-        section {
-            padding: 20px;
+            padding: 15px;
         }
 
         #chatBox {
             width: 90%;
-            max-width: 400px;
-            margin: auto;
+            max-width: 500px;
+            margin: 20px auto;
             background: white;
-            padding: 10px;
+            padding: 15px;
             border-radius: 10px;
+            height: 400px;
+            overflow-y: auto;
+            text-align: left;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
 
-        #messages {
-            height: 200px;
-            overflow-y: auto;
-            text-align: left;
-            margin-bottom: 10px;
+        #inputArea {
+            width: 90%;
+            max-width: 500px;
+            margin: auto;
+            display: flex;
         }
 
         input {
-            width: 70%;
-            padding: 8px;
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px 0 0 5px;
+            border: 1px solid #ccc;
+            outline: none;
         }
 
         button {
-            padding: 8px;
-            background: #ff9800;
+            padding: 10px 15px;
             border: none;
+            background-color: #0d6efd;
             color: white;
+            border-radius: 0 5px 5px 0;
             cursor: pointer;
         }
 
         button:hover {
-            background: #e68900;
+            background-color: #084298;
+        }
+
+        .user {
+            color: green;
+            margin: 5px 0;
+        }
+
+        .bot {
+            color: blue;
+            margin: 5px 0;
         }
     </style>
 </head>
@@ -61,52 +75,63 @@
 <body>
 
 <header>
-    <h1>Shrinivas Electricals ⚡</h1>
-    <p>Nanded | 11 AM - 9 PM</p>
+    <h2>Shrinivas Electricals</h2>
+    <p>Nanded | 11 AM – 9 PM</p>
 </header>
 
-<section>
-    <h2>Our Products</h2>
-    <p>Fans | Mixers | Wires | LED Bulbs | Switch Boards | Pipes | Electric Iron | Batteries</p>
-</section>
-
-<section>
-    <h2>Ask Our Assistant</h2>
-
-    <div id="chatBox">
-        <div id="messages"></div>
-        <input type="text" id="userInput" placeholder="Ask something...">
-        <button onclick="sendMessage()">Send</button>
+<div id="chatBox">
+    <div class="bot">
+        Hello! 👋 Welcome to Shrinivas Electricals. How can I help you?
     </div>
-</section>
+</div>
+
+<div id="inputArea">
+    <input type="text" id="userInput" placeholder="Ask about fans, wires, bulbs..." />
+    <button onclick="sendMessage()">Send</button>
+</div>
 
 <script>
-function sendMessage() {
-    const input = document.getElementById("userInput");
-    const message = input.value;
+    function sendMessage() {
+        const input = document.getElementById("userInput");
+        const message = input.value.trim();
 
-    if (!message) return;
+        if (message === "") return;
 
-    const messagesDiv = document.getElementById("messages");
+        const chatBox = document.getElementById("chatBox");
 
-    messagesDiv.innerHTML += "<p><b>You:</b> " + message + "</p>";
+        chatBox.innerHTML += `<div class="user"><b>You:</b> ${message}</div>`;
+        input.value = "";
 
-    fetch("https://shrinivas-electricals.onrender.com/chat", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ message: message })
-    })
-    .then(response => response.json())
-    .then(data => {
-        messagesDiv.innerHTML += "<p><b>Assistant:</b> " + data.reply + "</p>";
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    });
-
-    input.value = "";
-}
+        fetch("https://backend-q4k0.onrender.com", {   // 👈 CHANGE THIS
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message: message })
+        })
+        .then(response => response.json())
+        .then(data => {
+            chatBox.innerHTML += `<div class="bot"><b>Assistant:</b> ${data.reply}</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        })
+        .catch(error => {
+            chatBox.innerHTML += `<div class="bot"><b>Assistant:</b> Server error. Please try again later.</div>`;
+        });
+    }
 </script>
 
 </body>
 </html>
+ 
+    
+  
+        
+     
+
+
+
+     
+        
+     
+            
+   
